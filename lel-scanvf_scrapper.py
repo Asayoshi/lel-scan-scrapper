@@ -66,6 +66,32 @@ def dl_chapter(chapter_to_dl):
             dl_image_from_src(url,toCreate)
         else:
             break
+def dl_chapterr(chapter_to_dl):
+    if chapter_to_dl[-1]!="/":
+        chapter_to_dl+="/"
+    ## Set up the image URL and filename
+    image_url = get_img_url_from_page(chapter_to_dl)
+    chapter=image_url.split("/")[-2]
+    serie=image_url.split("/")[-4]
+
+    #create_serie_rep(os.getcwd()+"/"+serie)
+
+    toCreate = os.getcwd()+"/"+chapter
+    print(toCreate)
+    try:
+        os.mkdir(toCreate)
+    except OSError:
+        print("Impossible de créer le dossier")
+    else:
+        print("Création dossier : %s"%toCreate)
+
+    for i in range(1,30):
+        url=chapter_to_dl+str(i)
+        r = requests.get(url)
+        if r.status_code==200:
+            dl_image_from_src(url,toCreate)
+        else:
+            break
 
 def create_serie_rep(path):
     try:
@@ -89,8 +115,10 @@ def dl_all_chapters():
         if r.status_code==200:
             dl_chapter(series+str(i)+"/")
         else:
-            break
-#dl_chapter()
-dl_all_chapters()
+            continue
 
-#get_img_url_from_page("https://www.lelscan-vf.me/manga/solo-leveling/129/1")
+choix=str(input("Que voulez vous faire?:\n 1. Télécharger un chapitre précis \n 2. Télécharqer une série entière\n"))
+if choix=="1":
+    dl_chapterr(str(input("Entrez l'url du chapitre lel-scan-vf à dl\n")))
+if choix=="2":
+    dl_all_chapters()
